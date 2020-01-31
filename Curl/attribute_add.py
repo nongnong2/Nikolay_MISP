@@ -66,7 +66,7 @@ if __name__ == "__main__":
             continue
 
         else:
-            _value == data[0]
+            _value = data[0]
             _category ="Artifacts dropped"
             _type = "filename"
         
