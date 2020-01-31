@@ -20,20 +20,22 @@ def check_data_character(data):
     sha1 = re.findall(r"([a-fA-F\d]{40})", data)
     sha256 = re.findall(r"([a-fA-F\d]{64})", data)
 
-    if md5:
-        data = [md5[0], "md5"]
+    try:
+        if data.replace('\n','') == md5[0]:
+            data = [md5[0], "md5"]
 
-    elif sha1:
-        data = [sha1[0], "sha1"]
+        elif data.replace('\n','') == sha1[0]:
+            data = [sha1[0], "sha1"]
 
-    elif sha256:
-        data = [sha256[0], "sha256"]
+        elif data.replace('\n','') == sha256[0]:
+            data = [sha256[0], "sha256"]
+    
+    except:
+        if validators.url(data.replace('[.]','.')) == True:
+            data = [data.replace('\n',''), "url"]
 
-    elif validators.url(data) == True:
-        data = [data, "url"]
-
-    else:
-        data = [data, "file name"]
+        else:
+            data = [data.replace('\n', ''), "file name"]
 
     return data
 
@@ -46,29 +48,31 @@ if __name__ == "__main__":
     lines = f.readlines()
     for ioc in lines:
         data = check_data_character(ioc)
+        try:
+            if data[1] == "md5":
+                _value = data[0]
+                _category = "Artifacts dropped"
+                _type = "md5"
 
-        if data[1] == "md5":
-            _value = data[0]
-            _category = "Artifacts dropped"
-            _type = "md5"
-        
-        elif data[1] == "sha1":
-            _value = data[0]
-            _category = "Artifacts dropped"
-            _type = "sha1"
+            elif data[1] == "sha1":
+                _value = data[0]
+                _category = "Artifacts dropped"
+                _type = "sha1"
 
-        elif data[1] == "url":
-            _value = data[0]
-            _category = "Artifacts dropped"
-            _type = "url"
-        
-        elif data[0] == "":
+            elif data[1] == "url":
+                _value = data[0]
+                _category = "Network activity"
+                _type = "url"
+
+            elif data[0] == "":
+                continue
+
+            else:
+                _value = data[0]
+                _category ="Artifacts dropped"
+                _type = "filename"
+        except:
             continue
-
-        else:
-            _value = data[0]
-            _category ="Artifacts dropped"
-            _type = "filename"
         
         add_attribute(_event_id,_value,_category,_type)
 
