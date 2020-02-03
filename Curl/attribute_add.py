@@ -35,12 +35,12 @@ def check_data_character(data):
             data = [data.replace('\n',''), "url"]
 
         else:
-            data = [data.replace('\n', ''), "file name"]
+            pass
 
     return data
 
 if __name__ == "__main__":
-    IoC_file_path = "./Ioc.txt"
+    IoC_file_path = "./IoC_kimsuki.txt"
     
     _event_id = int(input("what's event id? "))
 
@@ -59,18 +59,21 @@ if __name__ == "__main__":
                 _category = "Artifacts dropped"
                 _type = "sha1"
 
+            elif data[1] == "sha256":
+                _value = data[0]
+                _category = "Artifacts dropped"
+                _type = "sha256"       
+
             elif data[1] == "url":
                 _value = data[0]
                 _category = "Network activity"
                 _type = "url"
 
             elif data[0] == "":
-                continue
+                pass
 
             else:
-                _value = data[0]
-                _category ="Artifacts dropped"
-                _type = "filename"
+                continue
         except:
             continue
         
