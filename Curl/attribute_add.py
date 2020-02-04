@@ -19,6 +19,11 @@ def check_data_character(data):
     md5 = re.findall(r"([a-fA-F\d]{32})", data)
     sha1 = re.findall(r"([a-fA-F\d]{40})", data)
     sha256 = re.findall(r"([a-fA-F\d]{64})", data)
+    IP = re.findall(r"\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b", data)
+    Email = re.findall(r"\b([a-z][_a-z0-9-.]+@[a-z0-9-]+\.[a-z]+)\b", data)
+    CVE = re.findall(r"\b(CVE\-[0-9]{4}\-[0-9]{4,6})\b", data)
+    Filename = re.findall(r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b", data)
+
 
     try:
         if data.replace('\n','') == md5[0]:
@@ -29,7 +34,19 @@ def check_data_character(data):
 
         elif data.replace('\n','') == sha256[0]:
             data = [sha256[0], "sha256"]
-    
+
+        elif data.replace('\n', '') == IP[0]:
+            data = [IP[0], "ip-src"]
+
+        elif data.replace('\n', '') == Email[0]:
+            data = [Email[0], "email-src"]
+        
+        elif data.replace('\n', '') == CVE[0]:
+            data = [CVE[0], "vulnerability"]
+        
+        elif data.replace('\n', '') == Filename[0]:
+            data = [Filename[0], "filename"]
+
     except:
         if validators.url(data.replace('[.]','.')) == True:
             data = [data.replace('\n',''), "url"]
@@ -68,6 +85,26 @@ if __name__ == "__main__":
                 _value = data[0]
                 _category = "Network activity"
                 _type = "url"
+
+            elif data[1] == "ip-src":
+                _value = data[0]
+                _category = "Network activity"
+                _type = "ip-src"
+
+            elif data[1] == "email-src":
+                _value = data[0]
+                _category = "Network activity"
+                _type = "email-src"
+
+            elif data[1] == "vulnerability":
+                _value = data[0]
+                _category = "Artifacts dropped"
+                _type = "vulnerability"
+
+            elif data[1] == "filename":
+                _value = data[0]
+                _category = "Artifacts dropped"
+                _type = "filename"
 
             elif data[0] == "":
                 pass
